@@ -16,7 +16,9 @@ class App extends Component {
                 {name: 'John C.', salary: 800, increase: false, rise: true, id: 1},
                 {name: 'Alex M.', salary: 3000, increase: true, rise: false, id: 2},
                 {name: 'Carl W.', salary: 5000, increase: false, rise: false, id: 3}
-            ]
+            ],
+            input: '',
+            filter: 'Rise'
         }
         this.maxId = 4;
     }
@@ -56,20 +58,53 @@ class App extends Component {
         }))
     }
 
+    serachEmployee = (input, array) => {
+        if(input === 0){
+            return array
+        }
+
+        return array.filter(item => {
+            return item.name.indexOf(input) > -1 // returning index of string that we've found
+        })
+    }
+    
+    onUpdateSearch = (input) => {
+        this.setState({input: input}) //setting this.state.input from serachPanel to App input to filtet data
+    }
+
+    filterPost = (filter, array) => {
+        switch(filter){
+            case 'Rise':
+                return array.filter(item => item.rise)
+            case 'High':
+                return array.filter(item => item.salary > 1000)
+            default:
+                return array 
+        }   
+        
+    }
+
+    onFilterSelect = (filter) => {
+        this.setState({filter: filter})
+    }
+
     render() {
+        const {dataBase, input, filter} = this.state
         const employees = this.state.dataBase.length;
         const increased = this.state.dataBase.filter(item => item.increase).length;
+        const visibleData = this.filterPost(filter, this.serachEmployee(input, dataBase))
         return (
             <div className="app">
                 <AppInfo employees={employees} increased={increased}/>
     
                 <div className="search-panel">
-                    <SearchPanel/>
-                    <AppFilter/>
+                    <SearchPanel
+                    onUpdateSearch={this.onUpdateSearch}/>
+                    <AppFilter filter={filter} onFilterSelect={this.onFilterSelect}/>
                 </div>
                 
                 <EmployeesList 
-                    dataBase={this.state.dataBase}
+                    dataBase={visibleData}
                     onDelete={this.deleteItem}
                     onToggleProp={this.onToggleProp}/>
                 <EmployeesAddForm onAdd={this.addItem}/>
