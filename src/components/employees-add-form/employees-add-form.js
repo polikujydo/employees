@@ -7,8 +7,9 @@ class EmployeesAddForm extends Component{
     super(props)
     this.state = {
         name: '',
-        salary: ''
+        salary: '',
     }
+    this.classNames = "form-control new-post-label "
 }
 
 onValueChange = (event) => {
@@ -18,6 +19,9 @@ onValueChange = (event) => {
 }
 onSubmit = (event) => {
     event.preventDefault();
+    if(this.state.name.length < 3 || !this.state.salary){
+        return
+    }
     this.props.onAdd(this.state.name, this.state.salary);
     this.setState({
         name: '',
@@ -33,13 +37,13 @@ onSubmit = (event) => {
                     className="add-form d-flex"
                     onSubmit={this.onSubmit}>
                     <input type="text"
-                        className="form-control new-post-label"
+                        className= {this.classNames}
                         placeholder="Name"
                         name="name"
                         value={this.state.name} //Because of value={state}, state now controlling input value
                         onChange={this.onValueChange} />
                     <input type="number"
-                        className="form-control new-post-label"
+                        className= {this.classNames}
                         placeholder="Wage"
                         name="salary"
                         value={this.state.salary}
